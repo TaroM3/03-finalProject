@@ -23,16 +23,16 @@ const initializePassport = () => {
                 return done(null, false)
             }
 
-            const cartID = (await CartModel.create({}))._id.toString()
-            console.log(cartID)
-            const cart = CartModel.findById(cartID)
+            // const cartID = (await CartModel.create({}))._id.toString()
+            // console.log(cartID)
+            // const cart = CartModel.findById(cartID)
             const newUser = {
                 first_name,
                 last_name,
                 email,
                 age,
                 password: createHash(password),
-                carts: {id: cartID},
+                carts: {id: (await CartModel.create({}))._id.toString()},
                 role: 'user'
             }
             // newUser.cart.push({id: cartID})
