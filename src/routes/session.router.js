@@ -1,6 +1,11 @@
 import { Router } from "express";
 import passport from "passport";
-import { JWT_COOKIE_NAME, extractCookie } from "../utils.js";
+import { JWT_COOKIE_NAME, JWT_PRIVATE_KEY, extractCookie } from "../utils.js";
+import cookieParser, { JSONCookie } from "cookie-parser";
+import UserModel from "../dao/models/user.model.js";
+import config from "../config/config.js";
+import userController from "../controller/user.controller.js";
+import { verify } from "jsonwebtoken";
 
 const router = Router()
 
@@ -46,23 +51,34 @@ router.get('/faillogin', (req, res) => {
 // })
 
 // Cerrar Session
-router.get('/logout', (req, res) => {
+router.get('/logout', async (req, res) => {
+    if (await UserModel.findOne({email: config.admin.adminEmail})) {
+        await UserModel.deleteOne({email: config.admin.adminEmail})
+    }
+    res.clearCookie(JWT_COOKIE_NAME).redirect('/session/login')
+
+})
     // req.session.destroy(err => {
     //     if (err) {
     //         console.log(err);
     //         res.status(500).render('errors/base', { error: err })
     //     } else res.redirect('/session/login')
     // })
-    res.clearCookie(JWT_COOKIE_NAME).redirect('/session/login')
-})
-
-
 router.get('/current', (req, res) => {
     let user = extractCookie(req.cookies[JWT_COOKIE_NAME])
-    console.log(req.user.user)
+    // console.log(req.user)
+    // console.log(req.user.user)
     // cookie( JWT_COOKIE_NAME, req.user.token)
     console.log(req.cookies[JWT_COOKIE_NAME])
-    res.send(JSON.stringify(req.user.user))
+    verify(req.cookies[JWT_COOKIE_NAME], JWT_PRIVATE_KEY, (err, decoded) =>{
+        console.log(decoded)
+        res.send(JSON.stringify(decoded.user))
+    })
+    // res.json(req.user)
+    // res.cookie(JWT_COOKIE_NAME, req)
+    // res.json(req.cookies.JWT_COOKIE_NAME)
+    // res.json(user)
+    // res.extractCookie(req.cookies[JWT_COOKIE_NAME])
 })
 
 export default router

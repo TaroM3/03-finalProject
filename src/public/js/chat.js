@@ -33,7 +33,7 @@ socket.on("logs", data => {
     const divLog = document.getElementById("messageLogs")
     let messages = ""
 
-    data.reverse().forEach(message => {
+    data.forEach(message => {
         messages += `<p><i>${message.user}</i>: ${message.message}</p>`
     });
     divLog.innerHTML = messages

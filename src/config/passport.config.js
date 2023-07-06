@@ -5,6 +5,7 @@ import UserModel from "../dao/models/user.model.js";
 import { createHash, isValidPassword, generateToken, extractCookie } from '../utils.js'
 import { JWT_PRIVATE_KEY } from "../utils.js";
 import CartModel from "../dao/models/cart.model.js";
+import config from "./config.js";
 
 const LocalStrategy = local.Strategy
 const JWTStrategy = passport_jwt.Strategy
@@ -16,6 +17,11 @@ const initializePassport = () => {
     }, async (req, username, password, done) => {
 
         const {first_name, last_name, email, age } = req.body
+
+        if (email === config.admin.adminEmail) {
+            return done(null, false)    
+        }
+
         try {
             const user = await UserModel.findOne({email: username})
             if(user) {
@@ -49,6 +55,29 @@ const initializePassport = () => {
     passport.use('login', new LocalStrategy({
         usernameField: 'email'
     }, async (username, password, done) => {
+
+        if (username === config.admin.adminEmail) {
+            if (password === config.admin.adminPassword) {
+
+                const user = {
+                    first_name: 'Lautaro',
+                    last_name: 'Melillo',
+                    age: 29, 
+                    email: username,
+                    password: createHash(password),
+                    role: 'admin'
+                }
+                await UserModel.create(user)
+
+
+                const adminUser = await UserModel.findOne({email: username})
+                const token = generateToken(user)
+                adminUser.token = token
+                return done(null, adminUser)
+            } else {
+                return done(null, false)
+            }
+        }
         try {
             const user = await UserModel.findOne({email: username})
             if(!user) {
