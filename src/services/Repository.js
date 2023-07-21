@@ -1,6 +1,6 @@
-export default class Service {
+export default class Repository {
     constructor(dao, model) {
-        this.dao = dao
+        this.dao = dao,
         this.model = model
     }
 
