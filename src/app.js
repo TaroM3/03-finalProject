@@ -13,9 +13,16 @@ import run from "./run.js";
 
 import dotenv from 'dotenv'
 import config from "./config/config.js";
+import program from "./commander.js";
 
 const app = express()
 
+
+// program.option('-d <persistence>', 'Persistence', config.environment.development)
+
+// program.parse()
+// const persistance = program.opts().persistance
+// console.log(program.opts().)
 dotenv.config()
 
 app.use(express.json())
@@ -51,7 +58,7 @@ mongoose.connect(MONGO_URI, {
         console.log("Database's not conected...")
         return
     }
-
+    // console.log(program.opts().pers)
     console.log(config.mongo.dbName)
     const httpServer = app.listen(8080, () => console.log("SERVER :  Listening..."))
     const socketServer = new Server(httpServer)
