@@ -1,19 +1,28 @@
 import UserModel from "../dao/models/user.model.js"
 import config from "../config/config.js"
+import UserDto from "../dto/userDto.js"
+import UserService from "../services/user.services.js"
+
+
+const userService = new UserService()
 
 const getUsers = async(req, res) => {
     let results = await userService.get()
-    res.send(results)
+    let resultDTO = results.map(user => new UserDto(user))
+    res.send(resultDTO)
 }
 
 const saveUser = async(req, res) => {
-    let result = await userService.save(req.body)
+    let user = req.body
+    let result = await userService.save(user)
+    // let result = await UserService.addUser(user)
+    res.send(result) 
 }
 
 const deleteAdmin = async (req, res) => {
-    if (await UserModel.findOne({email: config.admin.adminEmail})) {
-        await UserModel.deleteOne({email: config.admin.adminEmail})
-    }
+    // if (await UserModel.findOne({email: config.admin.adminEmail})) {
+    //     await UserModel.deleteOne({email: config.admin.adminEmail})
+    // }
     res.clearCookie(JWT_COOKIE_NAME).redirect('/session/login')
 }
 

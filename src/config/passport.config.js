@@ -6,9 +6,11 @@ import { createHash, isValidPassword, generateToken, extractCookie } from '../ut
 import { JWT_PRIVATE_KEY } from "../utils.js";
 import CartModel from "../dao/models/cart.model.js";
 import config from "./config.js";
+import { userService } from "../services/IndexServices.js";
 
 const LocalStrategy = local.Strategy
 const JWTStrategy = passport_jwt.Strategy
+
 const initializePassport = () => {
 
     passport.use('register', new LocalStrategy({
@@ -23,8 +25,10 @@ const initializePassport = () => {
         }
 
         try {
-            const user = await UserModel.findOne({email: username})
-            if(user) {
+            // const user = await UserModel.findOne({email: username})
+            const user = await userService.get({email: username})
+            console.log(user)
+            if(user.length > 0) {
                 console.log("User already exits");
                 return done(null, false)
             }
@@ -32,6 +36,7 @@ const initializePassport = () => {
             // const cartID = (await CartModel.create({}))._id.toString()
             // console.log(cartID)
             // const cart = CartModel.findById(cartID)
+
             const newUser = {
                 first_name,
                 last_name,
@@ -42,7 +47,8 @@ const initializePassport = () => {
                 role: 'user'
             }
             // newUser.cart.push({id: cartID})
-            const result = await UserModel.create(newUser)
+            // const result = await UserModel.create(newUser)
+            const result = await userService.save(newUser)
             
             return done(null, result)
         } catch (error) {
@@ -79,8 +85,9 @@ const initializePassport = () => {
             }
         }
         try {
-            const user = await UserModel.findOne({email: username})
-            if(!user) {
+            // const user = await UserModel.findOne({email: username})
+            const user = await userService.get({email: username})
+            if(user.length > 0) {
                 console.log("User doesnt exist");
                 return done(null, user)
             }
@@ -108,7 +115,8 @@ const initializePassport = () => {
     })
 
     passport.deserializeUser(async (id, done) => {
-        const user = await UserModel.findById(id)
+        // const user = await UserModel.findById(id)
+        const user = await userService.get({_id: id})
         done(null, user)
     })
 

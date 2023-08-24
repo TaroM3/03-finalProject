@@ -1,26 +1,52 @@
 import mongoose from "mongoose";
 
-const userCollection = "users"
+// const userCollection = "users"
 
-const userSchema = new mongoose.Schema({
-    first_name: String,
-    last_name: String,
-    email: String,
-    age: Number,
-    password: String,
-    carts: {
-        type: {
-            id: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'carts'
-            }
-        },
-        _id: false,
-    },
-    role: String
-})
+export default class UserModel {
+    static get model() {
+        return "users"
+    }
 
-mongoose.set("strictQuery", false)
-const UserModel = mongoose.model(userCollection, userSchema)
+    static get schema() {
+        return {
+            first_name: String,
+            last_name: String,
+            email: String,
+            age: Number,
+            password: String,
+            carts: {
+                type: {
+                    id: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: "carts"
+                    }
+                },
+                _id: false,
+            },
+            role: String
+        }
+    }
+}
 
-export default UserModel
+// const userSchema = new mongoose.Schema({
+//     first_name: String,
+//     last_name: String,
+//     email: String,
+//     age: Number,
+//     password: String,
+//     carts: {
+//         type: {
+//             id: {
+//                 type: mongoose.Schema.Types.ObjectId,
+//                 ref: 'carts'
+//             }
+//         },
+//         _id: false,
+//     },
+//     role: String
+// })
+
+// mongoose.set("strictQuery", false)
+// const UserModel = mongoose.model(userCollection, userSchema)
+
+// export default UserModel

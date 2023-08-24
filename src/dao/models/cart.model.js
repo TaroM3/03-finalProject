@@ -1,7 +1,29 @@
 import mongoose from "mongoose";
 
-const cartCollection = "carts"
 
+// export default class CartModel {
+//     static get model(){
+//         return 'carts'
+//     }
+    
+//     static get schema() {
+//         return {
+//             products: {
+//                         type: [{
+//                             id: {
+//                                 type: mongoose.Schema.Types.ObjectId,
+//                                 ref: "products"
+//                             },
+//                             quantity: Number
+//                         }],
+//                         default: [],
+//                         _id: false,
+//                     }
+//         }
+//     }
+// }
+  
+const cartCollection = "carts"
 const cartSchema = new mongoose.Schema({
     products: {
         type: [{

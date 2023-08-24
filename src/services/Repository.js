@@ -5,10 +5,14 @@ export default class Repository {
     }
 
     get = async(params) => {
-        return this.dao.get(params, this.model)
+        return await this.dao.get(params, this.model)
     }
 
     save = async(data) => {
         return this.dao.insert(data, this.model)
+    }
+
+    find = async(criteria) => {
+        return this.dao.get(criteria, this.model)
     }
 }

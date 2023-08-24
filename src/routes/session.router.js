@@ -31,7 +31,7 @@ router.get('/login', (req, res) => {
 // API para login
 router.post('/login', passport.authenticate('login', { failureRedirect: '/session/faillogin' }), async (req, res) => {
     if (!req.user) {
-        return res.status(400).send({ status: "error", error: "Invalid credentiales" })
+        return res.status(400).send({ status: "error", error: "Invalid credentials" })
     }
     // req.session.user = {
     //     first_name: req.user.first_name,

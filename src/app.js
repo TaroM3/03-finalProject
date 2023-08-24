@@ -28,8 +28,10 @@ app.set("view engine", "handlebars")
 
 // const MONGO_URI = "mongodb+srv://taromelillo:Hw8C2a43e6CXWHK6@cluster0.4lcw6qm.mongodb.net/"
 // const MONGO_DB_NAME = "ecommerce"
-const MONGO_URI = process.env.MONGO_URI
-const MONGO_DB_NAME = process.env.MONGO_DB_NAME
+// const MONGO_URI = process.env.MONGO_URI
+const MONGO_URI = config.mongo.url
+// const MONGO_DB_NAME = process.env.MONGO_DB_NAME
+const MONGO_DB_NAME = config.mongo.dbName
 
 app.use(session({
     // store: MongoStore.create({
