@@ -1,8 +1,9 @@
 import {fileURLToPath} from 'url'
 import { dirname } from 'path'
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+import jwt, { verify } from 'jsonwebtoken'
 import passport from 'passport'
+import UserDto from './dto/userDto.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
@@ -36,4 +37,18 @@ export const passportCall = strategy => {
             next()
         })(req, res, next)
     }
+}
+
+export const createUniqueCode = (id) => {
+    return bcrypt.hashSync(id, bcrypt.genSaltSync(10))
+}
+
+export const userInfo = (req, res, next) => {
+    console.log(req.cookies[JWT_COOKIE_NAME])
+    verify(req.cookies[JWT_COOKIE_NAME], JWT_PRIVATE_KEY, (err, decoded) =>{
+        console.log(decoded)
+        let userDto = new UserDto(decoded.user)
+        req.userInfo = userDto
+        next()
+    })
 }

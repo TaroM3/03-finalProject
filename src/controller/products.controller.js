@@ -1,8 +1,9 @@
 import productModel from "../dao/models/products.model.js"
-
+import { productService } from "../services/IndexServices.js"
 
 const getAllProducts = async (req, res) => {
-    const products = await productModel.find().lean().exec()
+    // const products = await productModel.find().lean().exec()
+    const products = await productService.get()
     const limit = req.query.limit || 5
     
     res.json(products.slice(0, parseInt(limit)))
@@ -11,7 +12,7 @@ const getAllProducts = async (req, res) => {
 
 const getProductById = async(req, res) => {
     const id = req.params.id
-    const product = await productModel.findOne({_id: id})
+    const product = await productService.get({_id: id})
 
     res.json({
         product
@@ -20,10 +21,10 @@ const getProductById = async(req, res) => {
 
 const deleteProductById = async(req, res) => {
     const id = req.params.pid
-    const productDeleted = await productModel.deleteOne({_id: id})
+    const productDeleted = await productService.delete({_id: id})
 
-    req.io.emit('updatedProducts', await productModel.find().lean().exec())
-
+    // req.io.emit('updatedProducts', await productService.find().lean().exec())
+    req.io.emit('updatedProducts', await productService.getLeanExec());
     res.json({
         status: 'Success',
         message: 'Product Deleted!',
@@ -41,7 +42,8 @@ const addNewProduct = async (req, res) => {
             })
         }
         const productAdded = await productModel.create(product)
-        req.io.emit('updatedProducts', await productModel.find().lean().exec());
+        // req.io.emit('updatedProducts', await productModel.find().lean().exec());
+        req.io.emit('updatedProducts', await productService.getLeanExec());
         res.json({
             status: "Success",
             productAdded
@@ -61,7 +63,8 @@ const updateProductById = async (req, res) => {
     const product = await productModel.updateOne({
         _id: id
     }, productToUpdate)
-    req.io.emit('updatedProducts', await productModel.find().lean().exec());
+    // req.io.emit('updatedProducts', await productModel.find().lean().exec());
+    req.io.emit('updatedProducts', await productService.getLeanExec());
     res.json({
         status: "Success",
         product
@@ -69,7 +72,8 @@ const updateProductById = async (req, res) => {
 }
 
 const getRealTime = async (req, res) => {
-    const products = await productModel.find().lean().exec()
+    // const products = await productModel.find().lean().exec()
+    const products = await productService.getLeanExec()
     res.render('realTimeProducts', {
         data: products
     })
@@ -79,17 +83,22 @@ const getProductsView = async (req, res) => {
 
     const limit = req.query?.limit || 10
     const page = req.query?.page || 1
-    const filter = req.query?.filter || ''
+    let filter = req.query?.filter || ''
     const sortQuery = req.query?.sort || ''
     const sortQueryOrder = req.query?.sortorder || 'desc'
 
-    const search = {}
+    let search = {}
     if(filter) {
-        search.title = filter
+        // search.title = 'Durian'
+        // search.title = /^durian$/i
+        search = { title : { $regex: new RegExp(`^${filter}$`), $options: 'i' } }
+        console.log(search)
     }
-    const sort = {}
+    let sort = {}
     if (sortQuery) {
-        sort[sortQuery] = sortQueryOrder
+        // sort[sortQuery] = sortQueryOrder
+        sort = { [sortQuery] : sortQueryOrder }
+        // console.log(sort)
     }
 
     const options = {
@@ -99,7 +108,8 @@ const getProductsView = async (req, res) => {
         lean: true
     }
     
-    const data = await productModel.paginate(search, options)
+    // const data = await productModel.paginate(search, options)
+    const data = await productService.getPagination({}, search, options)
     console.log(JSON.stringify(data, null, 2, '\t'));
 
     const user = req.user.user

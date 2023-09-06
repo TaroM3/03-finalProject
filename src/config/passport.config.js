@@ -2,16 +2,19 @@ import passport from "passport";
 import local from "passport-local"
 import passport_jwt, { ExtractJwt } from "passport-jwt";
 import UserModel from "../dao/models/user.model.js";
-import { createHash, isValidPassword, generateToken, extractCookie } from '../utils.js'
+import { createHash, isValidPassword, generateToken, extractCookie, JWT_COOKIE_NAME } from '../utils.js'
 import { JWT_PRIVATE_KEY } from "../utils.js";
 import CartModel from "../dao/models/cart.model.js";
 import config from "./config.js";
-import { userService } from "../services/IndexServices.js";
+import { cartService, userService } from "../services/IndexServices.js";
+import { verify } from "jsonwebtoken";
+import UserDto from "../dto/userDto.js";
 
 const LocalStrategy = local.Strategy
 const JWTStrategy = passport_jwt.Strategy
 
 const initializePassport = () => {
+
 
     passport.use('register', new LocalStrategy({
         passReqToCallback: true,
@@ -43,7 +46,7 @@ const initializePassport = () => {
                 email,
                 age,
                 password: createHash(password),
-                carts: {id: (await CartModel.create({}))._id.toString()},
+                carts: {id: (await cartService.save({}))._id.toString()},
                 role: 'user'
             }
             // newUser.cart.push({id: cartID})
@@ -73,10 +76,10 @@ const initializePassport = () => {
                     password: createHash(password),
                     role: 'admin'
                 }
-                await UserModel.create(user)
+                await userService.save(user)
 
 
-                const adminUser = await UserModel.findOne({email: username})
+                const adminUser = await userService.get({email: username})
                 const token = generateToken(user)
                 adminUser.token = token
                 return done(null, adminUser)
@@ -87,17 +90,18 @@ const initializePassport = () => {
         try {
             // const user = await UserModel.findOne({email: username})
             const user = await userService.get({email: username})
-            if(user.length > 0) {
+            console.log(user)
+            if(user.length <= 0) {
                 console.log("User doesnt exist");
                 return done(null, user)
             }
 
-            if(!isValidPassword(user, password)) return done(null, false)
+            if(!isValidPassword(user[0], password)) return done(null, false)
 
-            const token = generateToken(user)
-            user.token = token
+            const token = generateToken(user[0])
+            user[0].token = token
 
-            return done(null, user)
+            return done(null, user[0])
         } catch (error) {
             
         }

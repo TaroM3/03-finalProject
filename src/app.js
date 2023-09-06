@@ -15,8 +15,8 @@ import dotenv from 'dotenv'
 import config from "./config/config.js";
 import program from "./commander.js";
 
-const app = express()
 
+const app = express()
 
 // program.option('-d <persistence>', 'Persistence', config.environment.development)
 
@@ -54,7 +54,7 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 mongoose.connect(MONGO_URI, {
-    dbName: MONGO_DB_NAME
+    dbName: MONGO_DB_NAME,
 }, (error) => {
     if(error){
         console.log("Database's not conected...")

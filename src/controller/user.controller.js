@@ -26,4 +26,17 @@ const deleteAdmin = async (req, res) => {
     res.clearCookie(JWT_COOKIE_NAME).redirect('/session/login')
 }
 
-export default { getUsers, saveUser, deleteAdmin }
+const getUser = async(req, res) => {
+    let user = extractCookie(req.cookies[JWT_COOKIE_NAME])
+    // console.log(req.user)
+    // console.log(req.user.user)
+    // cookie( JWT_COOKIE_NAME, req.user.token)
+    console.log(req.cookies[JWT_COOKIE_NAME])
+    verify(req.cookies[JWT_COOKIE_NAME], JWT_PRIVATE_KEY, (err, decoded) =>{
+        console.log(decoded)
+        
+        res.send(JSON.stringify(decoded.user))
+    })
+}
+
+export default { getUsers, saveUser, deleteAdmin, getUser }

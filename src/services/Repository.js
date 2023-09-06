@@ -13,6 +13,16 @@ export default class Repository {
     }
 
     find = async(criteria) => {
-        return this.dao.get(criteria, this.model)
+        return await this.dao.get(criteria, this.model)
+    }
+    delete = async(criteria) => {
+        return await this.dao.delete(criteria, this.model)
+    }
+
+    getLeanExec = async(criteria) => {
+        return await this.dao.getLeanExec(criteria, this.model)
+    }
+    getPagination = async(criteria, search, options) => {
+        return await this.dao.getPaginate(criteria, search, options, this.model)
     }
 }
