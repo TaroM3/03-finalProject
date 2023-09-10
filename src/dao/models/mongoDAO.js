@@ -18,10 +18,10 @@ export default class MongoDAO {
         const timestamp = { timestamp: { createAt: 'created_at', updatedAt: 'updated_at' }}
         
         
-        const userSchema = mongoose.Schema(UserModel.schema, timestamp, mongoose.set('strictQuery', false))
-        const cartSchema = mongoose.Schema(CartModel.schema, mongoose.set('strictQuery', false))
-        const productSchema = mongoose.Schema(ProductModel.schema, mongoose.set('strictQuery', false))
-        const ticketSchema = mongoose.Schema(TicketModel.schema, mongoose.set('strictQuery', false))
+        const userSchema = mongoose.Schema(UserModel.schema, timestamp)
+        const cartSchema = mongoose.Schema(CartModel.schema)
+        const productSchema = mongoose.Schema(ProductModel.schema)
+        const ticketSchema = mongoose.Schema(TicketModel.schema)
         productSchema.plugin(mongoosePaginate)
 
 
@@ -82,11 +82,24 @@ export default class MongoDAO {
 
         try {
             // let instance = await this.models[entity].find()
-            var searching = "durian"
+            // var searching = "durian"
             let results = await this.models[entity].paginate(search, options)
             // productModel.paginate(search, options)
             // console.log(JSON.stringify(results, null, 2, '\t'));
             return results
+        } catch (err) {
+            console.log(err.message)
+            return null
+        }
+    }
+    update = async(criteria, data, entity) => {
+        if(!this.models[entity]) throw new Error('Entity not found in models')
+
+        try {
+            let instance = await this.models[entity].find(criteria)
+            console.log(instance)
+            let result = await this.models[entity].updateOne(criteria, {...instance, ...data})
+            return result
         } catch (err) {
             console.log(err.message)
             return null

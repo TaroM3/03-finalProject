@@ -23,7 +23,12 @@ export default class UserModel {
                 },
                 _id: false,
             },
-            role: String
+            role: String,
+            documents: [{
+                name: String,
+                reference: String 
+                }],
+            last_connection: {type: Date, default: Date.now}
         }
     }
 }

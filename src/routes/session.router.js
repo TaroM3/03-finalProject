@@ -32,19 +32,21 @@ router.get('/login', (req, res) => {
 })
 
 // API para login
-router.post('/login', passport.authenticate('login', { failureRedirect: '/session/faillogin' }), async (req, res) => {
-    if (!req.user) {
-        return res.status(400).send({ status: "error", error: "Invalid credentials" })
-    }
-    // req.session.user = {
-    //     first_name: req.user.first_name,
-    //     last_name: req.user.last_name,
-    //     email: req.user.email,
-    //     age: req.user.age,
-    // }
+router.post('/login', passport.authenticate('login', { failureRedirect: '/session/faillogin' }), userController.login)
 
-    res.cookie(JWT_COOKIE_NAME, req.user.token).redirect('/products')
-})
+// async (req, res) => {
+//     if (!req.user) {
+//         return res.status(400).send({ status: "error", error: "Invalid credentials" })
+//     }
+//     // req.session.user = {
+//     //     first_name: req.user.first_name,
+//     //     last_name: req.user.last_name,
+//     //     email: req.user.email,
+//     //     age: req.user.age,
+//     // }
+
+//     res.cookie(JWT_COOKIE_NAME, req.user.token).redirect('/products')
+// })
 router.get('/faillogin', (req, res) => {
     res.send({error: "Fail Login"})
 })
@@ -54,13 +56,14 @@ router.get('/faillogin', (req, res) => {
 // })
 
 // Cerrar Session
-router.get('/logout', async (req, res) => {
-    if (await UserModel.findOne({email: config.admin.adminEmail})) {
-        await UserModel.deleteOne({email: config.admin.adminEmail})
-    }
-    res.clearCookie(JWT_COOKIE_NAME).redirect('/session/login')
+router.get('/logout', userInfo, userController.logout)
+// async (req, res) => {
+//     // if (await UserModel.findOne({email: config.admin.adminEmail})) {
+//     //     await UserModel.deleteOne({email: config.admin.adminEmail})
+//     // }
+//     res.clearCookie(JWT_COOKIE_NAME).redirect('/session/login')
 
-})
+// })
     // req.session.destroy(err => {
     //     if (err) {
     //         console.log(err);
@@ -80,7 +83,7 @@ router.get('/logout', async (req, res) => {
 //     })
 // })
 
-router.get('/current', userInfo , (req, res) => {
+router.get('/current', userInfo , async(req, res) => {
 
     res.send(JSON.stringify(req.userInfo))
 })

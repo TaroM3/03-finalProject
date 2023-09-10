@@ -96,6 +96,10 @@ const initializePassport = () => {
                 return done(null, user)
             }
 
+            const date = Date.now()
+            console.log(date)
+            await userService.update({_id: user[0]._id}, {last_connection: date})
+
             if(!isValidPassword(user[0], password)) return done(null, false)
 
             const token = generateToken(user[0])

@@ -9,7 +9,7 @@ export default class TicketModel {
             // purchase_datetime: 'created_at',
             purchase_datetime: String,
             amount: Number,
-            puchaser: String 
+            puchaser: { type: Date, default: Date.now } 
         }
     }
 }

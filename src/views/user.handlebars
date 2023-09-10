@@ -1,0 +1,11 @@
+<h1>{{user.fullname}}</h1>
+<h2>{{user.role}}</h2>
+<img src="{{user.avatar}}" alt="">
+
+<form action="/api/users/premium/{{user.id}}" enctype="multipart/form-data" method="post">
+  <div class="form-group">
+    <input type="file" class="form-control-file" name="avatarImage">
+    {{!-- <input type="text" class="form-control" placeholder="Number of speakers" name="nspeakers"> --}}
+    <input type="submit" value="Upload" class="btn btn-default">            
+  </div>
+</form>

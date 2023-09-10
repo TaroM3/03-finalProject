@@ -1,10 +1,11 @@
 import UserModel from "../dao/models/user.model.js"
 import config from "../config/config.js"
 import UserDto from "../dto/userDto.js"
-import UserService from "../services/user.services.js"
+// import serService from "../services/user.services.js"
+import { JWT_COOKIE_NAME } from "../utils.js"
+import { userService } from "../services/IndexServices.js"
 
 
-const userService = new UserService()
 
 const getUsers = async(req, res) => {
     let results = await userService.get()
@@ -39,4 +40,30 @@ const getUser = async(req, res) => {
     })
 }
 
-export default { getUsers, saveUser, deleteAdmin, getUser }
+const login = async(req, res) => {
+    if(!req.user) res.status(400).send({status: 'error', error: 'Invalid credentials'})
+
+    // await userService.update({_id: req.userInfo.id}, {last_connection: Date.now()})
+    res.cookie(JWT_COOKIE_NAME, req.user.token).redirect('/products')
+}
+
+const logout = async (req, res) => {
+    // if (await userService.get({email: config.admin.adminEmail})) {
+    //     await userService.delete({email: config.admin.adminEmail})
+    // }
+
+    try {
+        const user = req.userInfo
+        // console.log(user)
+        const date = Date.now()
+        console.log(date)
+        let result = await userService.update({_id: user.id}, {last_connection: date})
+        console.log(result)
+        res.clearCookie(JWT_COOKIE_NAME).redirect('/session/login')
+        
+    } catch (err) {
+        console.log(err)
+        res.send('Logout Error')
+    }
+}
+export default { getUsers, saveUser, deleteAdmin, getUser, login, logout }

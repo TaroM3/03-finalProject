@@ -3,6 +3,8 @@ import MongoDAO from "../dao/models/mongoDAO.js";
 import UserService from "./user.services.js";
 import ProductService from "./product.services.js";
 import CartService from "./cart.services.js";
+import TicketService from "./ticket.services.js";
+
 
 
 
@@ -18,3 +20,4 @@ switch (config.app.persistence) {
 export const userService = new UserService(dao)
 export const productService = new ProductService(dao)
 export const cartService = new CartService(dao)
+export const ticketService = new TicketService(dao)

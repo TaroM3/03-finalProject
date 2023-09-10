@@ -32,7 +32,8 @@ export default class ProductModel {
             status: Boolean,
             stock: Number,
             category: String,
-            thumbnails: Array
+            thumbnails: Array,
+            owner: String
         }
     }
 }
