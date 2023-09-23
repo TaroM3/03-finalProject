@@ -6,6 +6,7 @@ import productViewsRouter from './routes/products.views.router.js'
 import sessionRouter from './routes/session.router.js'
 import { passportCall } from "./utils.js";
 import userRouter from "./routes/user.router.js"
+import restoreRouter from './routes/restore.router.js'
 
 const run = (socketServer, app) => {
     app.use((req, res, next) => {
@@ -15,6 +16,7 @@ const run = (socketServer, app) => {
 
     app.use("/products", passportCall('jwt') , productViewsRouter)
     app.use("/session", sessionRouter)
+    app.use("/restore", restoreRouter)
 
 
     app.use("/api/products", productRouter)
@@ -33,7 +35,7 @@ const run = (socketServer, app) => {
         })
     })
 
-    app.use("/", (req, res) => res.send("HOME"))
+    app.use("/", (req, res) => res.redirect("/session/login"))
 
 }
 

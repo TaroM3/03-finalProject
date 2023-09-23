@@ -24,10 +24,11 @@ export default class UserModel {
                 _id: false,
             },
             role: String,
-            documents: [{
-                name: String,
-                reference: String 
-                }],
+            documents: [],
+            restore: {
+                link: String,
+                last_restore: Date 
+            },
             last_connection: {type: Date, default: Date.now}
         }
     }

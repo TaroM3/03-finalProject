@@ -68,3 +68,16 @@ mongoose.connect(MONGO_URI, {
 
     run(socketServer, app)
 })
+
+
+
+MONGO_URI= "mongodb+srv://taromelillo:Hw8C2a43e6CXWHK6@cluster0.4lcw6qm.mongodb.net/"
+MONGO_DB_NAME="ecommerce"
+
+ADMIN_EMAIL= "admin@ecommerce.com"
+ADMIN_PASSWORD= "admin123"
+
+PERSISTENCE= "MONGO"
+
+MAIL_GMAIL = "taro.melillo@gmail.com"
+MAIL_PASSWORD_GMAIL = "kbeytxcfulaiqmxp"

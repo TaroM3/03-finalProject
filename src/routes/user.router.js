@@ -38,18 +38,34 @@ router.get('/', async(req, res) => {
     res.send('Muestra todos los usuarios')
 })
 
+router.get('/')
 // const upload = multer({ dest: '../uploads/'})
-router.get("/premium/:uid", userInfo, async(req, res) => {
-    let user = req.userInfo
-    res.render('user', {user} )
+router.get('/premium/:uid', userInfo, async(req, res) => {
+    const userId = req.userInfo.id
+    try {
+        const user = await userService.get({_id: userId})
+        const avatar = user[0].documents.map(document => {if(document.name === 'avatar') return document.reference}) 
+        const data = {user: req.userInfo, avatar: avatar}
+        res.render('user', data)
+    } catch (error) {
+        res.send('Error: ', error)
+    }
 })
 
-router.post('/:uid/documents', upload.single('avatarImage'), userInfo, async(req, res) => {
-    console.log(req.body)
-    let avatar = '/uploads/profiles/'+ req.file.filename
+router.post('/premium/:uid/documents', upload.single('avatarImage'), userInfo, async(req, res) => {
+    // console.log(req.body)
+    const avatar = '/uploads/profiles/'+ req.file.filename
     req.userInfo.avatar = avatar
-    let user = req.userInfo
-    userService.update({_id: user.id}, {avatar: avatar})
+
+    const user = req.userInfo
+    const userInstance = await userService.get({_id: user.id})
+    console.log(userInstance)
+    const data = {
+        name: avatar, reference: avatar
+    }
+    
+    userInstance[0].documents.push(data)
+    const result = await userService.update({_id: user.id}, {documents: userInstance[0].documents})
     res.render('user', {user})
 })
 

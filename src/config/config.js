@@ -18,5 +18,9 @@ export default {
     environment: {
         production: process.env.PRODUCTION,
         development: process.env.DEVELOPMENT
+    },
+    mail: {
+        gmail: process.env.MAIL_GMAIL,
+        password: process.env.MAIL_PASSWORD_GMAIL
     }
 }

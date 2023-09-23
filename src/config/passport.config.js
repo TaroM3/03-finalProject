@@ -47,7 +47,8 @@ const initializePassport = () => {
                 age,
                 password: createHash(password),
                 carts: {id: (await cartService.save({}))._id.toString()},
-                role: 'user'
+                role: 'user',
+                restore: {link: '', last_restore: ''}
             }
             // newUser.cart.push({id: cartID})
             // const result = await UserModel.create(newUser)
@@ -107,9 +108,13 @@ const initializePassport = () => {
 
             return done(null, user[0])
         } catch (error) {
-            
+            return done(null, false)
         }
     }))
+
+    // passport.use('/restore', new LocalStrategy({}))
+
+    // passport.use('')s
 
     passport.use('jwt', new JWTStrategy({
         jwtFromRequest: ExtractJwt.fromExtractors([extractCookie]),
@@ -127,6 +132,7 @@ const initializePassport = () => {
         const user = await userService.get({_id: id})
         done(null, user)
     })
+
 
 }
 
