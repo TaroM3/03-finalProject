@@ -21,7 +21,7 @@ import mongoosePaginate from 'mongoose-paginate-v2'
 
 export default class ProductModel {
     static get model() {
-        return 'products'
+        return "products"
     }
 
     static get schema() {

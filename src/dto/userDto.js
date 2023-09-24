@@ -5,5 +5,6 @@ export default class UserDto {
         this.email = user.email
         this.role = user.role
         this.avatar = user.avatar || 'https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg'
+        this.carts = user.carts.id
     }
 }

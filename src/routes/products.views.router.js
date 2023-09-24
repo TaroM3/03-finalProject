@@ -6,4 +6,6 @@ const router = Router()
 
 router.get("/", productsController.getProductsView)
 
+router.get('/:pid', productsController.getProductById)
+
 export default router

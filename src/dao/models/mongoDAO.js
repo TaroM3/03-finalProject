@@ -66,7 +66,7 @@ export default class MongoDAO {
     }
 
     getLeanExec = async(criteria, entity) => {
-        if(!this.model[entity]) throw new Error('Entity not fount in models')
+        if(!this.models[entity]) throw new Error('Entity not fount in models')
 
         try {
             let results = await this.models[entity].find(criteria).lean().exec()

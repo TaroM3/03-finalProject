@@ -1,5 +1,5 @@
 import productModel from "../dao/models/products.model.js"
-import { productService } from "../services/IndexServices.js"
+import {productService} from "../services/IndexServices.js"
 
 const getAllProducts = async (req, res) => {
     // const products = await productModel.find().lean().exec()
@@ -11,12 +11,17 @@ const getAllProducts = async (req, res) => {
 }
 
 const getProductById = async(req, res) => {
-    const id = req.params.id
-    const product = await productService.get({_id: id})
+    const id = req.params.pid
+    const productA = await productService.getLeanExec({_id: id})
 
-    res.json({
-        product
-    })
+    // res.json({
+    //     product
+    // })
+    const data = {
+        ...productA[0]
+    }
+    console.log(data)
+    res.render('productView', {data})
 }
 
 const deleteProductById = async(req, res) => {
