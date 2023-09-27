@@ -37,7 +37,7 @@ const run = (socketServer, app) => {
         })
     })
 
-    // app.use("/", (req, res) => res.redirect("/session/login"))
+    app.use("/", (req, res) => res.redirect("/session/login"))
 
 }
 

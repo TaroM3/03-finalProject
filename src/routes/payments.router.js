@@ -14,6 +14,8 @@ router.get('/checkout', userInfo, paymentsController.checkout);
 router.get('/success', paymentsController.success);
 
 router.get('/cancel', paymentsController.cancel);
+
+
 /////////////////////////
 
 
