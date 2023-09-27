@@ -33,7 +33,15 @@ export default class ProductModel {
             stock: Number,
             category: String,
             thumbnails: Array,
-            owner: String
+            owner: {
+                type: {
+                    id: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: "users"
+                    }
+                },
+                _id: false,
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 import {Router} from "express"
-import productModel from "../dao/models/products.model.js"
+// import productModel from "../dao/models/products.model.js"
 import productsController from "../controller/products.controller.js"
+import { userInfo } from "../utils.js"
 
 const router = Router()
 
@@ -13,7 +14,7 @@ router.get("/:id", productsController.getProductById)
 
 router.delete("/:pid", productsController.deleteProductById)
 
-router.post("/", productsController.addNewProduct)
+router.post("/", userInfo, productsController.addNewProduct)
 
 router.put("/:pid", productsController.updateProductById)
 

@@ -4,9 +4,10 @@ import chatRouter from "./routes/chat.router.js"
 import messagesModel from "./dao/models/messages.model.js";
 import productViewsRouter from './routes/products.views.router.js'
 import sessionRouter from './routes/session.router.js'
-import { passportCall } from "./utils.js";
+import { passportCall, userInfo } from "./utils.js";
 import userRouter from "./routes/user.router.js"
 import restoreRouter from './routes/restore.router.js'
+import paymentsRouter from './routes/payments.router.js'
 
 const run = (socketServer, app) => {
     app.use((req, res, next) => {
@@ -14,7 +15,7 @@ const run = (socketServer, app) => {
         next()
     })
 
-    app.use("/products", passportCall('jwt') , productViewsRouter)
+    app.use("/products", passportCall('jwt'), userInfo, productViewsRouter)
     app.use("/session", sessionRouter)
     app.use("/restore", restoreRouter)
 
@@ -23,6 +24,7 @@ const run = (socketServer, app) => {
     app.use("/api/carts", cartRouter)
     app.use("/api/chat", chatRouter)
     app.use("/api/users", userRouter)
+    app.use("/api/payments", paymentsRouter)
 
     app.use('/api/session', passportCall('jwt'), sessionRouter)
 

@@ -13,6 +13,7 @@ const getAllProducts = async (req, res) => {
 const getProductById = async(req, res) => {
     const id = req.params.pid
     const productA = await productService.getLeanExec({_id: id})
+    const user = req.userInfo
 
     // res.json({
     //     product
@@ -21,7 +22,7 @@ const getProductById = async(req, res) => {
         ...productA[0]
     }
     console.log(data)
-    res.render('productView', {data})
+    res.render('productView', {data, user})
 }
 
 const deleteProductById = async(req, res) => {
@@ -40,7 +41,16 @@ const deleteProductById = async(req, res) => {
 
 const addNewProduct = async (req, res) => {
     try {
-        const product = req.body
+        const user = req.userInfo
+        if(user.role !== 'premium' && user.role !== 'admin') res.status(500).json({status: 'Error', message: 'Only premium and admin users can upload products.'})
+        
+        const productInfo = req.body
+
+        const product = {
+            ...productInfo,
+            owner: user.id
+        }
+
         if (!product.title) {
             return res.status(400).json({
                 message: "Error Falta el nombre del producto"
@@ -117,7 +127,7 @@ const getProductsView = async (req, res) => {
     const data = await productService.getPagination({}, search, options)
     console.log(JSON.stringify(data, null, 2, '\t'));
 
-    const user = req.user.user
+    const user = req.userInfo
     
     const front_pagination = []
     for (let index = 1; index <=data.totalPages; index++) {

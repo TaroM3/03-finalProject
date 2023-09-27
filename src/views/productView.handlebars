@@ -1,14 +1,15 @@
 
-<p>{{data.price}}</p>
-<form action="/api/carts/{{user.carts}}/product/{{this._id}}" method="post">
+<form action="/api/carts/{{user.carts}}/product/{{data._id}}" method="post">
             {{data.title}}<br>
             {{data.description}}<br>
             {{data.price}}<br>
             {{data.code}}<br>
             {{data.stock}}<br>
+            <p>${{data.price}}</p><br>
             {{data.category}}<br>
             {{#each data.thumbnails}}
-                <img src={{this}} alt=""></br>
+                <img src={{this}} alt="">
             {{/each}}
+            <br>
             <button type="submit" >Comprar</button></td>
 </form>

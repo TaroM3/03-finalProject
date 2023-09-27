@@ -1,0 +1,6 @@
+<h1>My Cart</h1>
+{{!-- `${data}` --}}
+{{!-- {{data.products[0].quantity}} --}}
+{{#each data.docs.products}}
+    {{this.price}}
+{{/each}}

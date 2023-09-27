@@ -19,7 +19,9 @@ export default class MongoDAO {
         
         
         const userSchema = mongoose.Schema(UserModel.schema, timestamp)
-        const cartSchema = mongoose.Schema(CartModel.schema)
+        const cartSchema = mongoose.Schema(CartModel.schema).pre('find', function(){
+            this.populate('products.id')
+        })
         const productSchema = mongoose.Schema(ProductModel.schema)
         const ticketSchema = mongoose.Schema(TicketModel.schema)
         productSchema.plugin(mongoosePaginate)
@@ -67,6 +69,17 @@ export default class MongoDAO {
 
     getLeanExec = async(criteria, entity) => {
         if(!this.models[entity]) throw new Error('Entity not fount in models')
+
+        if(CartModel.model == [entity]){
+            try {
+                let results = await this.models[entity].find(criteria).populate('products').lean().exec()
+                console.log(results)
+                return results            
+            } catch (err) {
+                console.log(err.message)
+                return null
+            }
+        }
 
         try {
             let results = await this.models[entity].find(criteria).lean().exec()

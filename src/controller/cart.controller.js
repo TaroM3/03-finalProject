@@ -1,5 +1,5 @@
 import CartModel from "../dao/models/cart.model.js"
-import { cartService } from "../services/IndexServices.js"
+import { cartService, productService } from "../services/IndexServices.js"
 
 const getAllCarts = async (req, res) => {
     const carts = await CartModel.find().lean().exec()
@@ -39,28 +39,54 @@ const deleteProductFromCart = async (req, res) => {
 }
 
 const addProductToCart = async (req, res) => {
+    const user = req.userInfo
     const cartID = req.params.cid
     const productID = req.params.pid
     const quantity= req.body.quantity || 1
     // const cart = await CartModel.findById(cartID)
     const cart = await cartService.get({_id: cartID})
 
+    const product = await productService.get({_id: productID})
+    if(product[0].owner === user.id) res.status(500).json({status: 'Error', message: 'You cant buy your own products...'})
+    if(product[0].stock === 0) res.status(500).json({status: 'Error', message: 'This product has not enough stock...'})
     let found = false
-    for (let i = 0; i < cart.products.length; i++) {
-        if (cart.products[i].id == productID) {
-            cart.products[i].quantity++
+    for (let i = 0; i < cart[0].products.length; i++) {
+        if (cart[0].products[i].id == productID) {
+            cart[0].products[i].quantity++
             found = true
             break
         }
     }
+
+    if(cart[0])
+
+    
     if (found == false) {
-        cart.products.push({ id: productID, quantity})
+        cart[0].products.push({ id: productID, quantity})
     }
 
-    await cart.save()
+    await cart[0].save()
 
+    const userCart = cart[0]
 
-    res.json({status: "Success", cart})
+    res.json({status: "Success", userCart})
 }
 
-export default { getAllCarts, getCartById, createCart, deleteProductFromCart, addProductToCart }
+ const getUserCart = async(req , res) => {
+    // const userCart = req.userInfo.carts
+    const cartId = req.params.ucid
+
+    const cartArray = await cartService.getLeanExec({_id: cartId})
+    
+    if(cartArray.length < 1) res.status(500).json({status: 'Error', message: 'This cart does not exist. . . '})
+    const data = {
+        ...cartArray[0]
+    }
+
+    console.log(data)
+
+    res.status(200).json({status: 'Success', message: data})
+    // res.render('cartView', { data: data})
+ }
+
+export default { getAllCarts, getCartById, createCart, deleteProductFromCart, addProductToCart, getUserCart }

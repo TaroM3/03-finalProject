@@ -22,5 +22,8 @@ export default {
     mail: {
         gmail: process.env.MAIL_GMAIL,
         password: process.env.MAIL_PASSWORD_GMAIL
+    },
+    stripe: {
+        key: process.env.STRIPE_KEY
     }
 }

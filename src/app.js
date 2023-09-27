@@ -10,7 +10,7 @@ import initializePassport from "./config/passport.config.js";
 
 import __dirname from "./utils.js"
 import run from "./run.js";
-
+import cors from 'cors'
 import dotenv from 'dotenv'
 import config from "./config/config.js";
 import program from "./commander.js";
@@ -24,7 +24,7 @@ const app = express()
 // const persistance = program.opts().persistance
 // console.log(program.opts().)
 dotenv.config()
-
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(express.static(__dirname + "/public"))

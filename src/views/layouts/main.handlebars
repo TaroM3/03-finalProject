@@ -29,12 +29,15 @@
                             <a class="nav-link" href="/session/logout">Log out</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/api/users/premium/{{user._id}}">My profile</a>
+                            <a class="nav-link" href="/api/users/premium/{{user.id}}">My profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/api/carts/{{user.carts}}">My cart</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/api/payments/checkout">Checkout</a>
                         </li>
                         {{/if}}
-                        <li class="nav-item">
-                            <a class="nav-link disabled">Disabled</a>
-                        </li>
                     </ul>
                 </div>
             </div>
@@ -42,7 +45,9 @@
     <div class="container">
 
         <div>
-            {{ user.fullname }}
+            <h4>
+                {{ user.fullname }}
+            </h4>
         </div>
         {{{body}}}
     </div>
