@@ -14,7 +14,6 @@ export default {
     app: {
         persistence: process.env.PERSISTENCE
     },
-
     environment: {
         production: process.env.PRODUCTION,
         development: process.env.DEVELOPMENT
